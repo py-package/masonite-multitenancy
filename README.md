@@ -107,10 +107,36 @@ python craft tenancy:migrate
 ```
 
 Similary you can use `tenancy:migrate:refresh`, `tenancy:migrate:reset`, `tenancy:migrate:status` and `tenancy:migrate:rollback` commands.
-
-All these commands will work on all tenants. You can also use `tenancy:seed:run` command to seed all tenants.
-
 All commands will take `--tenants` option to specify tenants if you ever need.
+
+**Seed a tenant**
+
+```bash
+python craft tenancy:seed --tenants=tenant1
+# or
+python craft tenancy:seed --tenants=tenant1,tenant2
+```
+
+**Seed all tenants**
+
+```bash
+python craft tenancy:seed
+```
+
+### Final Step
+
+Now the multitenancy is almost ready to use. The final step is to make use of tenancy middleware. This middleware will be used to specify tenant in request on the fly. So, basically you have to attach this middleware to all the routes that are tenant aware.
+
+```python
+# config/routes.py
+# ...
+
+Route.get("/", "WelcomeController@show")
+Route.get("/tenant-aware-routes", "WelcomeController@show").middleware("multitenancy")
+```
+
+In above example, `/tenant-aware-routes` will be tenant aware. It means that if you have tenant setup and you are trying to access `/tenant-aware-routes` then you will get tenant specific items from the database.
+
 
 ## Contributing
 
