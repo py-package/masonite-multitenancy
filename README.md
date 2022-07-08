@@ -1,5 +1,3 @@
-# multitenancy
-
 <p align="center">
 <img src="https://banners.beyondco.de/Masonite%20Multitenancy.png?theme=light&packageManager=pip+install&packageName=masonite-multitenancy&pattern=charlieBrown&style=style_2&description=Multitenancy+package+for+masonite.&md=1&showWatermark=1&fontSize=100px&images=adjustments&widths=50&heights=50">
 </p>
@@ -17,7 +15,7 @@
   <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </p>
 
-## Introduction
+# Masonite Multitenancy
 
 Multitenancy package for Masonite!
 
@@ -70,6 +68,48 @@ This will prompt few questions just provider answers and that's it.
 ```bash
 python craft tenancy:create
 ```
+
+> Note: After creating a new tenant, you will need to setup related database configuration in `config/multitenancy.py`.
+
+For example, if your tenant database name is `tenant1`, then you need to add the following to `config/multitenancy.py`:
+
+```python
+# config/multitenancy.py
+
+TENANTS = {
+  "tenant1": {
+    "driver": "sqlite",
+    "database": env("SQLITE_DB_DATABASE", "tenant1.sqlite3"),
+    "prefix": "",
+    "log_queries": env("DB_LOG"),
+  },
+}
+```
+
+You can use any database driver that Masonite supports. For example, if you want to use MySQL, then you can use the following:
+
+```python
+# config/multitenancy.py
+
+TENANTS = {
+  "tenant1": {
+    "driver": "mysql",
+    "host": env("DB_HOST"),
+    "user": env("DB_USERNAME"),
+    "password": env("DB_PASSWORD"),
+    "database": env("DB_DATABASE"),
+    "port": env("DB_PORT"),
+    "prefix": "",
+    "grammar": "mysql",
+    "options": {
+        "charset": "utf8mb4",
+    },
+    "log_queries": env("DB_LOG"),
+  },
+}
+```
+
+> Note: Make sure you have set the `multitenancy` configuration before running any tenant related commands.
 
 **List all tenants**
 
@@ -138,15 +178,15 @@ Route.get("/tenant-aware-routes", "WelcomeController@show").middleware("multiten
 In above example, `/tenant-aware-routes` will be tenant aware. It means that if you have tenant setup and you are trying to access `/tenant-aware-routes` then you will get tenant specific items from the database.
 
 
-## Contributing
+### Contributing
 
 Please read the [Contributing Documentation](CONTRIBUTING.md) here.
 
-## Maintainers
+### Maintainers
 
 - [x] [Yubaraj Shrestha](https://www.github.com/yubarajshrestha)
 
-## License
+### License
 
 
 multitenancy is open-sourced software licensed under the [MIT license](LICENSE).
