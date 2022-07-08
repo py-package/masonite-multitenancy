@@ -1,6 +1,7 @@
 from masonite.middleware import Middleware
 from ..models.Tenant import Tenant
 
+
 class TenantFinderMiddleware(Middleware):
     """Middleware to find the tenant for the current request."""
 
@@ -8,7 +9,11 @@ class TenantFinderMiddleware(Middleware):
         from wsgi import application
 
         """Find the tenant for the current request."""
-        tenant = Tenant.where("domain", request.get_host()).or_where("database", request.get_subdomain()).first()
+        tenant = (
+            Tenant.where("domain", request.get_host())
+            .or_where("database", request.get_subdomain())
+            .first()
+        )
         if tenant:
             request.tenant = tenant
             tenancy = application.make("multitenancy")
