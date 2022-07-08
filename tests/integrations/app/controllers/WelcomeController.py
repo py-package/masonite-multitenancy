@@ -8,7 +8,8 @@ class WelcomeController(Controller):
     """WelcomeController Controller Class."""
 
     def show(self, view: View):
-        return view.render("welcome")
+        return User.all()
+        # return view.render("welcome")
 
     def index(self):
         User.create({"name": "John Doe", "email": "john@doe.com", "password": "capslock"})
