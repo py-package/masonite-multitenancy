@@ -1,6 +1,7 @@
 from masonite.commands.Command import Command
 from masoniteorm.migrations import Migration
 
+
 class TenancyMigrateStatus(Command):
     """
     Display migration status of all tenants or of a specific tenant.
@@ -17,7 +18,7 @@ class TenancyMigrateStatus(Command):
 
     def migration(self, tenant):
         self.tenancy.setup_connection(tenant)
-        
+
         migration = Migration(
             command_class=self,
             connection=tenant.database,
@@ -31,14 +32,10 @@ class TenancyMigrateStatus(Command):
         migrations = []
 
         for migration_file in migration.get_ran_migrations():
-            migrations.append(
-                ["<info>Y</info>", f"<comment>{migration_file}</comment>"]
-            )
+            migrations.append(["<info>Y</info>", f"<comment>{migration_file}</comment>"])
 
         for migration_file in migration.get_unran_migrations():
-            migrations.append(
-                ["<error>N</error>", f"<comment>{migration_file}</comment>"]
-            )
+            migrations.append(["<error>N</error>", f"<comment>{migration_file}</comment>"])
 
         table.set_rows(migrations)
 
@@ -50,10 +47,9 @@ class TenancyMigrateStatus(Command):
         if len(tenants) == 0:
             self.error("No tenants found!")
             exit()
-        
+
         for tenant in tenants:
             self.info(f"Status of tenant: {tenant.name}")
             self.warning("=====================START=====================")
             self.migration(tenant)
             self.warning("======================END======================")
-

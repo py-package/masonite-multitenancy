@@ -1,4 +1,3 @@
-import os
 from masonite.commands.Command import Command
 from masoniteorm.seeds import Seeder
 from inflection import camelize, underscore
@@ -34,12 +33,10 @@ class TenancySeed(Command):
             seeder_seeded = "Database Seeder"
         else:
             table = self.argument("table")
-            seeder_file = (
-                f"{underscore(table)}_table_seeder.{camelize(table)}TableSeeder"
-            )
+            seeder_file = f"{underscore(table)}_table_seeder.{camelize(table)}TableSeeder"
             seeder.run_specific_seed(seeder_file)
             seeder_seeded = f"{camelize(table)}TableSeeder"
-        
+
         self.line(f"<info>{seeder_seeded} seeded!</info>")
 
     def handle(self):
@@ -48,10 +45,9 @@ class TenancySeed(Command):
         if len(tenants) == 0:
             self.error("No tenants found!")
             exit()
-        
+
         for tenant in tenants:
             self.info(f"Seeding tenant: {tenant.name}")
             self.warning("=====================START=====================")
             self.seed(tenant)
             self.warning("======================END======================")
-

@@ -1,6 +1,7 @@
 from masonite.commands import Command
 from ..models.Tenant import Tenant
 
+
 class TenancyCreate(Command):
     """
     Creates a new tenant.
@@ -20,7 +21,7 @@ class TenancyCreate(Command):
         if not name:
             self.error("Name is required!")
             exit()
-        
+
         if not domain:
             self.error("Domain is required!")
             exit()
@@ -28,7 +29,7 @@ class TenancyCreate(Command):
         if not database:
             self.error("Database name is required!")
             exit()
-        
+
         tenant = Tenant.where("domain", domain).or_where("database", database).first()
         if tenant:
             self.error("Tenant already exists!")

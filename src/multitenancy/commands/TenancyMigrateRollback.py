@@ -1,6 +1,7 @@
 from masonite.commands.Command import Command
 from masoniteorm.migrations import Migration
 
+
 class TenancyMigrateRollback(Command):
     """
     Rolls back the last batch of migration of all tenants or of a specific tenant.
@@ -34,10 +35,11 @@ class TenancyMigrateRollback(Command):
         if len(tenants) == 0:
             self.error("No tenants found!")
             exit()
-        
+
         for tenant in tenants:
             self.info(f"Rolling back tenant: {tenant.name}")
             self.warning("=====================START=====================")
-            self.migration(tenant).rollback(migration=self.option("migration"), output=self.option("show"))
+            self.migration(tenant).rollback(
+                migration=self.option("migration"), output=self.option("show")
+            )
             self.warning("======================END======================")
-

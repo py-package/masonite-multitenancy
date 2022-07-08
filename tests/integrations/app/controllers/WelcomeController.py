@@ -3,6 +3,7 @@ from masonite.views import View
 from masonite.controllers import Controller
 from tests.integrations.app.models.User import User
 
+
 class WelcomeController(Controller):
     """WelcomeController Controller Class."""
 
@@ -10,8 +11,4 @@ class WelcomeController(Controller):
         return view.render("welcome")
 
     def index(self):
-        User.create({
-            'name': 'John Doe',
-            'email': 'john@doe.com',
-            'password': 'capslock'
-        })
+        User.create({"name": "John Doe", "email": "john@doe.com", "password": "capslock"})

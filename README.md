@@ -1,7 +1,7 @@
 # multitenancy
 
 <p align="center">
-    <img src="https://banners.beyondco.de/multitenancy.png?theme=light&packageManager=pip+install&packageName=masonite-multitenancy&pattern=topography&style=style_1&description=Multitenancy package for Masonite!&md=1&showWatermark=1&fontSize=100px&images=https%3A%2F%2Fgblobscdn.gitbook.com%2Fspaces%2F-L9uc-9XAlqhXkBwrLMA%2Favatar.png">
+<img src="https://banners.beyondco.de/Masonite%20Multitenancy.png?theme=light&packageManager=pip+install&packageName=masonite-multitenancy&pattern=charlieBrown&style=style_2&description=Multitenancy+package+for+masonite.&md=1&showWatermark=1&fontSize=100px&images=adjustments&widths=50&heights=50">
 </p>
 
 <p align="center">
@@ -21,39 +21,35 @@
 
 Multitenancy package for Masonite!
 
-## Features
+Multitenancy is a feature that allows you to have multiple tenants in your application. This is useful for things like a company having multiple websites, or a company having multiple apps.
 
-- _Add your package main features here_
-- _and here_
+### Features
 
-## Official Masonite Documentation
+- [x] Create a new tenant (with domain)
+- [x] Tenant specific configurations
+- [x] Tenant specific migrations and seeders
+- [x] Tenant middleware to specify tenant in request on the fly
 
-New to Masonite ? Please first read the [Official Documentation](https://docs.masoniteproject.com/).
-Masonite strives to have extremely comprehensive documentation 😃. It would be wise to go through the tutorials there.
-If you find any discrepencies or anything that doesn't make sense, be sure to comment directly on the documentation to start a discussion!
-
-Have questions or want to talk? Be sure to join the [Masonite Discord Community](https://discord.gg/TwKeFahmPZ)!
-
-## Installation
+### Installation
 
 ```bash
 pip install masonite-multitenancy
 ```
 
-## Configuration
+### Configuration
 
-Add multitenancyProvider to your project in `config/providers.py`:
+Add _`MultitenancyProvider`_ to your project in `config/providers.py`:
 
 ```python
 # config/providers.py
 # ...
-from multitenancy import multitenancyProvider
+from multitenancy import MultitenancyProvider
 
 # ...
 PROVIDERS = [
     # ...
     # Third Party Providers
-    multitenancyProvider,
+    MultitenancyProvider,
     # ...
 ]
 ```
@@ -64,9 +60,57 @@ Then you can publish the package resources (if needed) by doing:
 python craft package:publish multitenancy
 ```
 
-## Usage
+### Usage
 
-_Explain how to use your package_
+You'll get bunch of commands to manage tenants.
+
+**Create a new tenant**
+
+This will prompt few questions just provider answers and that's it.
+```bash
+python craft tenancy:create
+```
+
+**List all tenants**
+
+```bash
+python craft tenancy:list
+```
+
+**Delete a tenant**
+
+```bash
+# delete a tenant by database name
+python craft tenancy:delete --tenants=tenant1
+# or
+python craft tenancy:delete --tenants=tenant1,tenant2
+```
+
+**Delete all tenants**
+
+```bash
+python craft tenancy:delete
+```
+
+**Migrate a tenant**
+
+```bash
+python craft tenancy:migrate --tenants=tenant1
+# or
+python craft tenancy:migrate --tenants=tenant1,tenant2
+```
+
+**Migrate all tenants**
+  
+```bash
+python craft tenancy:migrate
+```
+
+Similary you can use `tenancy:migrate:refresh`, `tenancy:migrate:reset`, `tenancy:migrate:status` and `tenancy:migrate:rollback` commands.
+
+All these commands will work on all tenants. You can also use `tenancy:seed:run` command to seed all tenants.
+
+All commands will take `--tenants` option to specify tenants if you ever need.
 
 ## Contributing
 
@@ -74,7 +118,7 @@ Please read the [Contributing Documentation](CONTRIBUTING.md) here.
 
 ## Maintainers
 
-- [Yubaraj Shrestha](https://www.github.com/yubarajshrestha)
+- [x] [Yubaraj Shrestha](https://www.github.com/yubarajshrestha)
 
 ## License
 

@@ -1,6 +1,7 @@
 from masonite.commands import Command
 from ..models.Tenant import Tenant
 
+
 class TenancyList(Command):
     """
     List all tenants.

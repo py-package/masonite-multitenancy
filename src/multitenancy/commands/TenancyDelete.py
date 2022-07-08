@@ -1,5 +1,5 @@
 from masonite.commands import Command
-from ..models.Tenant import Tenant
+
 
 class TenancyDelete(Command):
     """
@@ -15,8 +15,7 @@ class TenancyDelete(Command):
         self.tenancy = self.app.make("multitenancy")
 
     def get_tenants(self):
-        """Returns a list of all tenants.
-        """
+        """Returns a list of all tenants."""
         tenants = self.option("tenants")
         try:
             if tenants == "default":

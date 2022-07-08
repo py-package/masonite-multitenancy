@@ -1,6 +1,7 @@
 from masonite.commands.Command import Command
 from masoniteorm.migrations import Migration
 
+
 class TenancyMigrateReset(Command):
     """
     Resets migration of all tenants or of a specific tenant.
@@ -33,10 +34,9 @@ class TenancyMigrateReset(Command):
         if len(tenants) == 0:
             self.error("No tenants found!")
             exit()
-        
+
         for tenant in tenants:
             self.info(f"Resetting tenant: {tenant.name}")
             self.warning("=====================START=====================")
             self.migration(tenant).reset(self.option("migration"))
             self.warning("======================END======================")
-

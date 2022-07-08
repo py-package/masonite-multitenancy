@@ -47,7 +47,7 @@ PROVIDERS = [
     AuthenticationProvider,
     ValidationProvider,
     AuthorizationProvider,
-    ORMProvider
+    ORMProvider,
 ]
 
-PROVIDERS += [ MultitenancyProvider ]
+PROVIDERS += [MultitenancyProvider]

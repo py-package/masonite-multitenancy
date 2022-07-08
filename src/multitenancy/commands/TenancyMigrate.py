@@ -2,6 +2,7 @@ import os
 from masonite.commands.Command import Command
 from masoniteorm.migrations import Migration
 
+
 class TenancyMigrate(Command):
     """
     Migrates database to all tenants or to a specific tenant.
@@ -41,19 +42,17 @@ class TenancyMigrate(Command):
         if os.getenv("APP_ENV") == "production" and not self.option("force"):
             answer = ""
             while answer not in ["y", "n"]:
-                answer = input(
-                    "Do you want to run migrations in PRODUCTION ? (y/n)\n"
-                ).lower()
+                answer = input("Do you want to run migrations in PRODUCTION ? (y/n)\n").lower()
             if answer != "y":
                 self.info("Migrations cancelled")
                 exit(0)
-        
+
         tenants = self.tenancy.get_tenants(self.option("tenants"))
 
         if len(tenants) == 0:
             self.error("No tenants found!")
             exit()
-        
+
         for tenant in tenants:
             migration = self.migration(tenant)
             if migration:
@@ -63,4 +62,3 @@ class TenancyMigrate(Command):
                 self.warning("=====================START=====================")
                 migration.migrate(migration=migration_name, output=show_output)
                 self.warning("======================END======================")
-

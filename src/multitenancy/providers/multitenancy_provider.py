@@ -16,7 +16,6 @@ from ..multitenancy import MultiTenancy
 
 
 class MultitenancyProvider(PackageProvider):
-
     def configure(self):
         """Register objects into the Service Container."""
         (
