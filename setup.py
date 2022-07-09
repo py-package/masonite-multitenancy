@@ -23,7 +23,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     # The project's main homepage.
-    url="https://github.com/yubarajshrestha/masonite-multitenancy",
+    url="https://github.com/py-package/masonite-multitenancy",
     # Author details
     author="Yubaraj Shrestha",
     author_email="yubaraj@pypackage.com",
