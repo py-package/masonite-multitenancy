@@ -1,3 +1,4 @@
+from masonite.request.request import Request
 from .models.Tenant import Tenant
 from masonite.configuration import config
 from masoniteorm.connections import ConnectionResolver
@@ -39,3 +40,33 @@ class MultiTenancy:
     def delete(self, tenant):
         """Deletes a tenant."""
         tenant.delete()
+
+    def get_subdomain(self, request: Request):
+        """Returns the subdomain for the current request."""
+        hosts = [request.environ.get("HTTP_HOST"), request.environ.get("HTTP_X_FORWARDED_HOST")]
+        subdomains = []
+        for host in hosts:
+            if host:
+                items = host.split(".")
+                if len(items) > 2:
+                    subdomains.append(items[0])
+        return subdomains, hosts
+
+    def __reset_connection(self):
+        ConnectionResolver().set_connection_details(config("database.databases"))
+
+    def find_tenant(self, request: Request):
+        """Finds the tenant for the current request."""
+        subdomains, hosts = self.get_subdomain(request)
+        subdomains = tuple(subdomains)
+        hosts = tuple(hosts)
+        print(hosts, subdomains)
+        try:
+            self.__reset_connection()
+            tenant = Tenant.where_raw("database in {database}".format(database=subdomains)).first()
+            if tenant:
+                self.setup_connection(tenant)
+                request.tenant = tenant
+        except Exception as e:
+            print(e)
+        return request
