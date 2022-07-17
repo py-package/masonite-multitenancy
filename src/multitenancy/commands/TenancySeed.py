@@ -1,6 +1,7 @@
 from masonite.commands.Command import Command
 from masoniteorm.seeds import Seeder
 from inflection import camelize, underscore
+from ..facades import Tenancy
 
 
 class TenancySeed(Command):
@@ -17,10 +18,9 @@ class TenancySeed(Command):
     def __init__(self, application):
         super().__init__()
         self.app = application
-        self.tenancy = self.app.make("multitenancy")
 
     def seed(self, tenant):
-        self.tenancy.setup_connection(tenant)
+        Tenancy.set_connection(tenant)
 
         seeder = Seeder(
             dry=self.option("dry"),
@@ -40,7 +40,7 @@ class TenancySeed(Command):
         self.line(f"<info>{seeder_seeded} seeded!</info>")
 
     def handle(self):
-        tenants = self.tenancy.get_tenants(self.option("tenants"))
+        tenants = Tenancy.get_tenants(self.option("tenants"))
 
         if len(tenants) == 0:
             self.error("No tenants found!")
