@@ -1,6 +1,7 @@
 from masonite.middleware import Middleware
 from ..facades import Tenancy
 
+
 class TenantFinderMiddleware(Middleware):
     """Middleware to find the tenant for the current request."""
 

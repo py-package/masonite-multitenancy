@@ -88,7 +88,7 @@ class MultiTenancy:
         try:
             self.reset_connection()
             return Tenant.where_raw("database in {database}".format(database=subdomains)).first()
-        except Exception as e:
+        except Exception:
             return None
 
     def create(self, name: str, database: str, domain: str):
@@ -96,7 +96,9 @@ class MultiTenancy:
 
         tenant = Tenant.where("domain", domain).or_where("database", database).first()
         if tenant:
-            raise Exception(f"Tenant: Domain: `{domain}` or Database: `{database}` already exists!")
+            raise Exception(
+                f"Tenant: Domain: `{domain}` or Database: `{database}` already exists!"
+            )
 
         tenant = Tenant.create(name=name, domain=domain, database=database)
         return tenant

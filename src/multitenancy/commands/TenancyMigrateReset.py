@@ -22,7 +22,7 @@ class TenancyMigrateReset(Command):
 
         return Migration(
             command_class=self,
-            connection='default',
+            connection="default",
             migration_directory=self.option("directory"),
             config_path=None,
             schema=None,
