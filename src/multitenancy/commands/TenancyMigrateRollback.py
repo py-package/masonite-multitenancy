@@ -1,5 +1,6 @@
 from masonite.commands.Command import Command
 from masoniteorm.migrations import Migration
+from ..facades import Tenancy
 
 
 class TenancyMigrateRollback(Command):
@@ -16,21 +17,20 @@ class TenancyMigrateRollback(Command):
     def __init__(self, application):
         super().__init__()
         self.app = application
-        self.tenancy = self.app.make("multitenancy")
 
     def migration(self, tenant):
-        self.tenancy.setup_connection(tenant)
+        Tenancy.set_connection(tenant)
 
         return Migration(
             command_class=self,
-            connection=tenant.database,
+            connection="default",
             migration_directory=self.option("directory"),
             config_path=None,
             schema=None,
         )
 
     def handle(self):
-        tenants = self.tenancy.get_tenants(self.option("tenants"))
+        tenants = Tenancy.get_tenants(self.option("tenants"))
 
         if len(tenants) == 0:
             self.error("No tenants found!")

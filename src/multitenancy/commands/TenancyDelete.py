@@ -1,4 +1,5 @@
 from masonite.commands import Command
+from ..facades import Tenancy
 
 
 class TenancyDelete(Command):
@@ -12,17 +13,16 @@ class TenancyDelete(Command):
     def __init__(self, application):
         super().__init__()
         self.app = application
-        self.tenancy = self.app.make("multitenancy")
 
     def get_tenants(self):
         """Returns a list of all tenants."""
         tenants = self.option("tenants")
         try:
             if tenants == "default":
-                tenants = self.tenancy.get_tenants()
+                tenants = Tenancy.get_tenants()
             else:
                 tenants = tenants.split(",")
-                tenants = [self.tenancy.get_tenant(tenant) for tenant in tenants]
+                tenants = [Tenancy.get_tenant(tenant) for tenant in tenants]
             return tenants
         except Exception as e:
             self.error(e)
@@ -36,6 +36,6 @@ class TenancyDelete(Command):
             exit()
 
         for tenant in tenants:
-            self.app.make("multitenancy").delete(tenant)
+            Tenancy.delete(tenant)
 
         self.info("All tenants deleted!")
