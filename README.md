@@ -57,58 +57,19 @@ Then you can publish the package resources (if needed) by doing:
 python craft package:publish multitenancy
 ```
 
-### Usage
+### Command Usage
 
 You'll get bunch of commands to manage tenants.
 
 **Create a new tenant**
 
 This will prompt few questions just provider answers and that's it.
+
 ```bash
 python craft tenancy:create
 ```
 
-> Note: After creating a new tenant, you will need to setup related database configuration in `config/multitenancy.py`.
-
-For example, if your tenant database name is `tenant1`, then you need to add the following to `config/multitenancy.py`:
-
-```python
-# config/multitenancy.py
-
-TENANTS = {
-  "tenant1": {
-    "driver": "sqlite",
-    "database": env("SQLITE_DB_DATABASE", "tenant1.sqlite3"),
-    "prefix": "",
-    "log_queries": env("DB_LOG"),
-  },
-}
-```
-
-You can use any database driver that Masonite supports. For example, if you want to use MySQL, then you can use the following:
-
-```python
-# config/multitenancy.py
-
-TENANTS = {
-  "tenant1": {
-    "driver": "mysql",
-    "host": env("DB_HOST"),
-    "user": env("DB_USERNAME"),
-    "password": env("DB_PASSWORD"),
-    "database": env("DB_DATABASE"),
-    "port": env("DB_PORT"),
-    "prefix": "",
-    "grammar": "mysql",
-    "options": {
-        "charset": "utf8mb4",
-    },
-    "log_queries": env("DB_LOG"),
-  },
-}
-```
-
-> Note: Make sure you have set the `multitenancy` configuration before running any tenant related commands.
+This will also automatically generate new database connection based on your `default` database connection from `config/database.py`.
 
 **List all tenants**
 
@@ -162,6 +123,96 @@ python craft tenancy:seed --tenants=tenant1,tenant2
 python craft tenancy:seed
 ```
 
+### Using Tenancy Facade
+
+**Create a new tenant**
+
+```python
+from multitenancy.facades import Tenancy
+
+# creates a new tenant and returns instance of new Tenant
+Tenancy.create(
+  name='tenant1',
+  domain='tenant1.example.com',
+  database='tenant1',
+) 
+```
+
+**Get tenant**
+
+```python
+from multitenancy.facades import Tenancy
+
+# by id
+Tenancy.get_tenant_by_id(1)
+
+# by domain
+Tenancy.get_tenant_by_domain('tenant1.example.com')
+
+# by database name
+Tenancy.get_tenant_by_database('tenant1')
+```
+
+**Delete tenant**
+  
+```python
+from multitenancy.facades import Tenancy
+
+
+tenant = Tenant.find(1)
+Tenancy.delete(tenant)
+```
+
+**Connections**
+
+```python
+from multitenancy.facades import Tenancy
+
+# setting tenant specific connection
+tenant = Tenant.find(1)
+Tenancy.set_connection(tenant)
+
+# resetting to default connection
+Tenancy.reset_connection()
+```
+
+Event though above approach can be used to set tenant specific connection, and do tenant related tasks, it's recommended to use `TenantContext` instead.
+
+### Using Tenant Context
+
+You might sometime need to get data from different tenant in your application or you might have to do some logic based on tenant. In this case you can use `TenantContext` class to get tenant data.
+
+```python
+from multitenancy.contexts import TenantContext
+from multitenancy.models.Tenant import Tenant
+
+tenant = Tenant.where('name', '=', 'tenant1').first()
+
+with TenantContext(tenant=tenant):
+    # do something with tenant1 data
+    # ...
+```
+
+You can also do all other tenant specific tasks like: `migrations`, `seeds`.
+
+```python
+from multitenancy.contexts import TenantContext
+from multitenancy.models.Tenant import Tenant
+
+tenant = Tenant.where('name', '=', 'tenant1').first()
+
+with TenantContext(tenant=tenant) as ctx:
+    # migrate the database
+    ctx.migrate()
+    ctx.migrate_refresh()
+    ctx.migrate_rollback()
+    ctx.migrate_reset()
+    ctx.migrate_status()
+    
+    # seed the database
+    ctx.seed()
+```
+
 ### Final Step
 
 Now the multitenancy is almost ready to use. The final step is to make use of tenancy middleware. This middleware will be used to specify tenant in request on the fly. So, basically you have to attach this middleware to all the routes that are tenant aware.
@@ -176,6 +227,10 @@ Route.get("/tenant-aware-routes", "WelcomeController@show").middleware("multiten
 
 In above example, `/tenant-aware-routes` will be tenant aware. It means that if you have tenant setup and you are trying to access `/tenant-aware-routes` then you will get tenant specific items from the database.
 
+
+### TODO
+
+- [x] Different database server for each tenant
 
 ### Contributing
 
