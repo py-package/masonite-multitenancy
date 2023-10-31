@@ -101,7 +101,7 @@ python craft tenancy:migrate --tenants=tenant1,tenant2
 ```
 
 **Migrate all tenants**
-  
+
 ```bash
 python craft tenancy:migrate
 ```
@@ -135,7 +135,7 @@ Tenancy.create(
   name='tenant1',
   domain='tenant1.example.com',
   database='tenant1',
-) 
+)
 ```
 
 **Get tenant**
@@ -154,7 +154,7 @@ Tenancy.get_tenant_by_database('tenant1')
 ```
 
 **Delete tenant**
-  
+
 ```python
 from multitenancy.facades import Tenancy
 
@@ -208,7 +208,7 @@ with TenantContext(tenant=tenant) as ctx:
     ctx.migrate_rollback()
     ctx.migrate_reset()
     ctx.migrate_status()
-    
+
     # seed the database
     ctx.seed()
 ```
@@ -227,7 +227,6 @@ Route.get("/tenant-aware-routes", "WelcomeController@show").middleware("multiten
 
 In above example, `/tenant-aware-routes` will be tenant aware. It means that if you have tenant setup and you are trying to access `/tenant-aware-routes` then you will get tenant specific items from the database.
 
-
 ### TODO
 
 - [x] Different database server for each tenant
@@ -242,6 +241,4 @@ Please read the [Contributing Documentation](CONTRIBUTING.md) here.
 
 ### License
 
-
 multitenancy is open-sourced software licensed under the [MIT license](LICENSE).
-
